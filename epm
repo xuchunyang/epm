@@ -17,6 +17,8 @@ usage () {
     echo "    list                List installed packages"
     echo "    install             Install a package"
     echo "    delete              Delete a package"
+    echo "    refresh             Download package archives"
+    echo "    info                Display information about a package"
     echo ""
     echo "Options:"
     echo "    -h, --help          Display this message"
@@ -36,7 +38,14 @@ delete () {
     emacs -Q --batch -l $EPM_DIRECTORY/epm.el --eval "(epm-delete \"$1\")"
 }
 
-# TODO info
+refresh () {
+    emacs -Q --batch -l $EPM_DIRECTORY/epm.el -f package-refresh-contents
+}
+
+info () {
+    emacs -Q --batch -l $EPM_DIRECTORY/epm.el --eval "(epm-info \"$1\")"
+}
+
 # TODO outdated
 # TODO upgrade
 

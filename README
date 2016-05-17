@@ -9,6 +9,8 @@ Commands:
     list                List installed packages
     install             Install a package
     delete              Delete a package
+    refresh             Download package archives
+    info                Display information about a package
 
 Options:
     -h, --help          Display this message
