@@ -57,8 +57,12 @@ case $COMMAND in
     "-v" | "--version")
         printf "epm %s\n" $EPM_VERSION
         ;;
-    *)
+    "list" | "install" | "delete" | "refresh" | "info")
         shift
         ${COMMAND} $@
+        ;;
+    *)
+        echo "Error: Unknown command: ${COMMAND}"
+        exit 1
         ;;
 esac
