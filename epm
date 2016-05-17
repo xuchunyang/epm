@@ -36,6 +36,10 @@ delete () {
     emacs -Q --batch -l $EPM_DIRECTORY/epm.el --eval "(epm-delete \"$1\")"
 }
 
+# TODO info
+# TODO outdated
+# TODO upgrade
+
 COMMAND=$1
 case $COMMAND in
     "" | "-h" | "--help")
