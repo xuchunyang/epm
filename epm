@@ -15,6 +15,7 @@ usage () {
     echo ""
     echo "Commands:"
     echo "    list                List installed packages"
+    echo "    install             Install a package"
     echo ""
     echo "Options:"
     echo "    -h, --help          Display this message"
@@ -24,6 +25,10 @@ usage () {
 
 list () {
     emacs -Q --batch -l $EPM_DIRECTORY/epm.el -f epm-list
+}
+
+install () {
+    emacs -Q --batch -l $EPM_DIRECTORY/epm.el --eval "(epm-install \"$1\")"
 }
 
 COMMAND=$1

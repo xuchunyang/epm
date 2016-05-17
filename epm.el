@@ -27,5 +27,8 @@
            (sort (mapcar #'symbol-name (mapcar #'car package-alist)) #'string<))
     (princ (format "%s\n" name))))
 
+(defun epm-install (pkg-name)
+  (package-install (intern pkg-name)))
+
 (provide 'epm)
 ;;; epm.el ends here
