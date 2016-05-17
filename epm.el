@@ -44,7 +44,11 @@
 (defun epm-info (pkg-name)
   ;; For feeding `package--builtins'
   (require 'finder-inf nil t)
-  (let* ((pkg (intern pkg-name))
+  (let* (
+         ;; Silence messages
+         ;; https://github.com/cask/shut-up/pull/9#issuecomment-95485157
+         (inhibit-message t)
+         (pkg (intern pkg-name))
          (desc (or
                 (cadr (assq pkg package-alist))
                 (let ((built-in (assq pkg package--builtins)))
