@@ -19,8 +19,16 @@
 
 ;;; Code:
 
-(require 'package)
-(package-initialize)
+(let ((epm-init-file "~/.epm.el"))
+  (if (file-exists-p epm-init-file)
+      ;; Using this instead of simply `load-file' is because I don't know how to
+      ;; silence load message, something like:
+      ;; Loading /Users/xcy/.epm.el (source)...
+      (with-temp-buffer
+        (insert-file-contents epm-init-file)
+        (eval-buffer))
+    (require 'package)
+    (package-initialize)))
 
 (defun epm-list ()
   (dolist (name
