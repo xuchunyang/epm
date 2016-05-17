@@ -48,6 +48,7 @@ info () {
 
 # TODO outdated
 # TODO upgrade
+# TODO search
 
 COMMAND=$1
 case $COMMAND in
