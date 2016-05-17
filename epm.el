@@ -30,5 +30,8 @@
 (defun epm-install (pkg-name)
   (package-install (intern pkg-name)))
 
+(defun epm-delete (pkg-name)
+  (package-delete (cadr (assoc (intern pkg-name) package-alist))))
+
 (provide 'epm)
 ;;; epm.el ends here
