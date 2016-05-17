@@ -1,5 +1,41 @@
-#!/bin/bash
+#!/bin/sh
 
-WD=$(dirname $0)
+EPM_VERSION="0.1"
 
-emacs -Q --batch -l $WD/epm.el -f epm-list
+EPM=$(basename $0)
+EPM_DIRECTORY=$(dirname $0)
+
+usage () {
+    echo ""
+    echo "$EPM - Emacs Package Manager"
+    echo ""
+    echo "Usage:"
+    echo "    $EPM <command>"
+    echo "    $EPM [option]"
+    echo ""
+    echo "Commands:"
+    echo "    list                List installed packages"
+    echo ""
+    echo "Options:"
+    echo "    -h, --help          Display this message"
+    echo "    -v, --version       Print version info and exit"
+    echo ""
+}
+
+list () {
+    emacs -Q --batch -l $EPM_DIRECTORY/epm.el -f epm-list
+}
+
+COMMAND=$1
+case $COMMAND in
+    "" | "-h" | "--help")
+        usage
+        ;;
+    "-v" | "--version")
+        printf "epm %s\n" $EPM_VERSION
+        ;;
+    *)
+        shift
+        ${COMMAND} $@
+        ;;
+esac
