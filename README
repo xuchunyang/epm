@@ -1,0 +1,14 @@
+
+epm - Emacs Package Manager
+
+Usage:
+    epm <command>
+    epm [option]
+
+Commands:
+    list                List installed packages
+
+Options:
+    -h, --help          Display this message
+    -v, --version       Print version info and exit
+
