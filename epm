@@ -5,6 +5,8 @@ EPM_VERSION="0.1"
 EPM=$(basename $0)
 EPM_DIRECTORY=$(dirname $0)
 
+EMACS=${EMACS:-emacs}
+
 usage () {
     echo ""
     echo "$EPM - Emacs Package Manager"
@@ -27,23 +29,23 @@ usage () {
 }
 
 list () {
-    emacs -Q --batch -l $EPM_DIRECTORY/epm.el -f epm-list
+    $EMACS -Q --batch -l $EPM_DIRECTORY/epm.el -f epm-list
 }
 
 install () {
-    emacs -Q --batch -l $EPM_DIRECTORY/epm.el --eval "(epm-install \"$1\")"
+    $EMACS -Q --batch -l $EPM_DIRECTORY/epm.el --eval "(epm-install \"$1\")"
 }
 
 delete () {
-    emacs -Q --batch -l $EPM_DIRECTORY/epm.el --eval "(epm-delete \"$1\")"
+    $EMACS -Q --batch -l $EPM_DIRECTORY/epm.el --eval "(epm-delete \"$1\")"
 }
 
 refresh () {
-    emacs -Q --batch -l $EPM_DIRECTORY/epm.el -f package-refresh-contents
+    $EMACS -Q --batch -l $EPM_DIRECTORY/epm.el -f package-refresh-contents
 }
 
 info () {
-    emacs -Q --batch -l $EPM_DIRECTORY/epm.el --eval "(epm-info \"$1\")"
+    $EMACS -Q --batch -l $EPM_DIRECTORY/epm.el --eval "(epm-info \"$1\")"
 }
 
 # TODO outdated
