@@ -55,7 +55,8 @@
                   (if built-in
                       (package--from-builtin built-in)
                     (cadr (assq pkg package-archive-contents))))))
-         (pkg-dir (if desc (package-desc-dir desc)))
+         (pkg-dir (if desc (package-desc-dir desc)
+                    (error "Error: Unknown package: %s" pkg-name)))
          (reqs (if desc (package-desc-reqs desc)))
          (version (if desc (package-desc-version desc)))
          (archive (if desc (package-desc-archive desc)))
