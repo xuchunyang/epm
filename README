@@ -11,6 +11,7 @@ Commands:
     delete              Delete a package
     refresh             Download package archives
     info                Display information about a package
+    search              Search packages
 
 Options:
     -h, --help          Display this message

@@ -90,5 +90,16 @@
       (princ (format "Homepage: %s\n" homepage)))
     (princ "\n")))
 
+(defun epm-search (query)
+  (let ((packages (mapcar 'car package-archive-contents)))
+    (setq packages (mapcar 'symbol-name packages))
+    (dolist (match (cl-remove-duplicates
+                    (delq nil
+                          (mapcar (lambda (name)
+                                    (if (string-match query name) name nil))
+                                  packages))
+                    :test #'equal))
+      (princ (format "%s\n" match)))))
+
 (provide 'epm)
 ;;; epm.el ends here

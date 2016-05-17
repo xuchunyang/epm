@@ -21,6 +21,7 @@ usage () {
     echo "    delete              Delete a package"
     echo "    refresh             Download package archives"
     echo "    info                Display information about a package"
+    echo "    search              Search packages"
     echo ""
     echo "Options:"
     echo "    -h, --help          Display this message"
@@ -48,9 +49,12 @@ info () {
     $EMACS -Q --batch -l $EPM_DIRECTORY/epm.el --eval "(epm-info \"$1\")"
 }
 
+search () {
+    $EMACS -Q --batch -l $EPM_DIRECTORY/epm.el --eval "(epm-search \"$1\")"
+}
+
 # TODO outdated
 # TODO upgrade
-# TODO search
 
 COMMAND=$1
 case $COMMAND in
@@ -60,7 +64,7 @@ case $COMMAND in
     "-v" | "--version")
         printf "epm %s\n" $EPM_VERSION
         ;;
-    "list" | "install" | "delete" | "refresh" | "info")
+    "list" | "install" | "delete" | "refresh" | "info" | "search")
         shift
         ${COMMAND} $@
         ;;
