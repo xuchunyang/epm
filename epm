@@ -6,6 +6,7 @@ EPM=$(basename $0)
 EPM_DIRECTORY=$(dirname $0)
 
 EMACS=${EMACS:-emacs}
+EMACS_FLAGS="-Q --batch -l $EPM_DIRECTORY/epm.el"
 
 usage () {
     cat <<EOF
@@ -30,27 +31,27 @@ EOF
 }
 
 list () {
-    $EMACS -Q --batch -l $EPM_DIRECTORY/epm.el -f epm-list
+    $EMACS $EMACS_FLAGS -f epm-list
 }
 
 install () {
-    $EMACS -Q --batch -l $EPM_DIRECTORY/epm.el --eval "(epm-install \"$1\")"
+    $EMACS $EMACS_FLAGS --eval "(epm-install \"$1\")"
 }
 
 delete () {
-    $EMACS -Q --batch -l $EPM_DIRECTORY/epm.el --eval "(epm-delete \"$1\")"
+    $EMACS $EMACS_FLAGS --eval "(epm-delete \"$1\")"
 }
 
 refresh () {
-    $EMACS -Q --batch -l $EPM_DIRECTORY/epm.el -f package-refresh-contents
+    $EMACS $EMACS_FLAGS -f package-refresh-contents
 }
 
 info () {
-    $EMACS -Q --batch -l $EPM_DIRECTORY/epm.el --eval "(epm-info \"$1\")"
+    $EMACS $EMACS_FLAGS --eval "(epm-info \"$1\")"
 }
 
 search () {
-    $EMACS -Q --batch -l $EPM_DIRECTORY/epm.el --eval "(epm-search \"$1\")"
+    $EMACS $EMACS_FLAGS --eval "(epm-search \"$1\")"
 }
 
 # TODO outdated
