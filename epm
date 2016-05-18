@@ -8,25 +8,25 @@ EPM_DIRECTORY=$(dirname $0)
 EMACS=${EMACS:-emacs}
 
 usage () {
-    echo ""
-    echo "$EPM - Emacs Package Manager"
-    echo ""
-    echo "Usage:"
-    echo "    $EPM <command>"
-    echo "    $EPM [option]"
-    echo ""
-    echo "Commands:"
-    echo "    list                List installed packages"
-    echo "    install             Install a package"
-    echo "    delete              Delete a package"
-    echo "    refresh             Download package archives"
-    echo "    info                Display information about a package"
-    echo "    search              Search packages"
-    echo ""
-    echo "Options:"
-    echo "    -h, --help          Display this message"
-    echo "    -v, --version       Print version info and exit"
-    echo ""
+    cat <<EOF
+$EPM - Emacs Package Manager
+
+Usage:
+    $EPM <command>
+    $EPM [option]
+
+Commands:
+    list                List installed packages
+    install             Install a package
+    delete              Delete a package
+    refresh             Download package archives
+    info                Display information about a package
+    search              Search packages
+
+Options:
+    -h, --help          Display this message
+    -v, --version       Print version info and exit
+EOF
 }
 
 list () {
