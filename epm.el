@@ -125,7 +125,10 @@
 
 (defun epm-outdated ()
   (dolist (package (epm--outdated-packages))
-    (princ (format "%s\n" package))))
+    (cl-destructuring-bind (old-version new-version) (epm--package-outdated-p package)
+      (princ (format "%s (%s < %s)\n" package
+                     (package-version-join old-version)
+                     (package-version-join new-version))))))
 
 (defun epm-upgrade (pkg-name)
   (let ((upgrades (epm--outdated-packages)))
