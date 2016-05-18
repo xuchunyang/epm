@@ -18,4 +18,11 @@ Options:
     -h, --help          Display this message
     -v, --version       Print version info and exit
 
+Environment Variable:
+    EMACS               The command name or executable path of Emacs
+
+Configuration File:
+    ~/.epm.el           The file contains code to bootstrap package.el
+                        Refer to /Users/xcy/Projects/epm/.epm.el.sample as an example
+
 WARNING: Tested with only Emacs 24.5 and 25.2 (trunk)
