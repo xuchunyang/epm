@@ -1,4 +1,3 @@
-
 epm - Emacs Package Manager
 
 Usage:
@@ -12,8 +11,9 @@ Commands:
     refresh             Download package archives
     info                Display information about a package
     search              Search packages
+    outdated            List outdated packages
+    upgrade             Upgrade outdated packages
 
 Options:
     -h, --help          Display this message
     -v, --version       Print version info and exit
-

@@ -106,5 +106,37 @@
                     :test #'equal))
       (princ (format "%s\n" match)))))
 
+(defun epm--package-outdated-p (package)
+  (let* ((pkg (cadr (assq package package-alist)))
+         (old-version (and pkg (package-desc-version pkg)))
+         (avaiable (cadr (assq package package-archive-contents)))
+         (new-version (and avaiable (package-desc-version avaiable))))
+    (and pkg avaiable
+         (version-list-< old-version new-version)
+         (list old-version new-version))))
+
+(defun epm--outdated-packages ()
+  (let (outdated)
+    (dolist (package (mapcar #'car package-alist))
+      (when (epm--package-outdated-p package)
+        (push package outdated)))
+    (nreverse outdated)))
+
+(defun epm-outdated ()
+  (dolist (package (epm--outdated-packages))
+    (princ (format "%s\n" package))))
+
+(defun epm-upgrade (pkg-name)
+  (let ((upgrades (epm--outdated-packages)))
+    (when (not (equal "" pkg-name))
+      (if (epm--package-outdated-p (intern pkg-name))
+          (setq upgrades (list (intern pkg-name)))
+        (princ (format "Error: Unable to upgrade package: %s\n" pkg-name))
+        (kill-emacs 1)))
+    (dolist (package upgrades)
+      (package-delete (cadr (assq package package-alist)))
+      (package-install package))
+    (princ (format "\nUpgrade %d package(s)\n" (length upgrades)))))
+
 (provide 'epm)
 ;;; epm.el ends here

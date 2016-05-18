@@ -23,6 +23,8 @@ Commands:
     refresh             Download package archives
     info                Display information about a package
     search              Search packages
+    outdated            List outdated packages
+    upgrade             Upgrade outdated packages
 
 Options:
     -h, --help          Display this message
@@ -54,8 +56,13 @@ search () {
     $EMACS $EMACS_FLAGS --eval "(epm-search \"$1\")"
 }
 
-# TODO outdated
-# TODO upgrade
+outdated () {
+    $EMACS $EMACS_FLAGS -f epm-outdated
+}
+
+upgrade () {
+    $EMACS $EMACS_FLAGS --eval "(epm-upgrade \"$1\")"
+}
 
 COMMAND=$1
 case $COMMAND in
@@ -66,7 +73,7 @@ case $COMMAND in
         printf "epm %s\n" $EPM_VERSION
         $EMACS --version | head -n 1
         ;;
-    "list" | "install" | "delete" | "refresh" | "info" | "search")
+    "list" | "install" | "delete" | "refresh" | "info" | "search" | "outdated" | "upgrade")
         shift
         ${COMMAND} $@
         ;;
