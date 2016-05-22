@@ -21,7 +21,7 @@ Options:
 Environment Variable:
     EMACS               The command name or executable path of Emacs
 
-Configuration File:
+Startup File:
     ~/.epm.el           The file contains code to bootstrap package.el
                         Refer to /Users/xcy/Projects/epm/.epm.el.sample as an example
 
