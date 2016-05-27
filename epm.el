@@ -3,7 +3,7 @@
 ;; Copyright (C) 2016  Chunyang Xu
 
 ;; Author: Chunyang Xu <xuchunyang.me@gmail.com>
-;; Package-Requires: ((emacs "24.5"))
+;; Package-Requires: ((emacs "24.3") (epl "0.8"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@
 
 ;;; Code:
 
+(require 'cl-lib)
+
 (let ((epm-init-file "~/.epm.el"))
   (if (file-exists-p epm-init-file)
       ;; Using this instead of simply `load-file' is because I don't know how to
@@ -31,73 +33,66 @@
     (require 'package)
     (package-initialize)))
 
+(require 'epl)
+
 (defun epm-list ()
   (dolist (name
-           (sort (mapcar #'symbol-name (mapcar #'car package-alist)) #'string<))
+           (nreverse
+            (mapcar #'epl-package-name (epl-installed-packages))))
     (princ (format "%s\n" name))))
 
 (defun epm-install (pkg-name)
-  (package-install (intern pkg-name)))
+  (let ((package (car (epl-find-available-packages (intern pkg-name)))))
+    (epl-package-install package)))
 
 (defun epm-delete (pkg-name)
-  (package-delete (cadr (assoc (intern pkg-name) package-alist))))
+  (let ((package (epl-find-installed-package (intern pkg-name))))
+    (epl-package-delete package)))
 
 (defun epm-info (pkg-name)
-  ;; For feeding `package--builtins'
-  (require 'finder-inf nil t)
-  (let* (
-         ;; Silence messages
-         ;; https://github.com/cask/shut-up/pull/9#issuecomment-95485157
-         (inhibit-message t)
-         (pkg (intern pkg-name))
-         (desc (or
-                (cadr (assq pkg package-alist))
-                (let ((built-in (assq pkg package--builtins)))
-                  (if built-in
-                      (package--from-builtin built-in)
-                    (cadr (assq pkg package-archive-contents))))))
-         (pkg-dir (if desc (package-desc-dir desc)
-                    (error "Error: Unknown package: %s" pkg-name)))
-         (reqs (if desc (package-desc-reqs desc)))
-         (version (if desc (package-desc-version desc)))
-         (archive (if desc (package-desc-archive desc)))
-         (extras (and desc (package-desc-extras desc)))
-         (homepage (cdr (assoc :url extras)))
-         (keywords (if desc (package-desc--keywords desc)))
-         (built-in (eq pkg-dir 'builtin))
-         (installable (and archive (not built-in)))
-         (status (if desc (package-desc-status desc) "orphan"))
-         (signed (if desc (package-desc-signed desc))))
-    (princ pkg-name)
-    (princ " is ")
-    (princ (if (memq (aref status 0) '(?a ?e ?i ?o ?u)) "an " "a "))
-    (princ status)
-    (princ " package.\n\n")
-    ;; Status
-    (cond (built-in
-           (princ "  Status: Built-In"))
-          (pkg-dir
-           (princ "  Status: Installed"))
-          (installable
-           (princ "  Status: Not installed"))
-          (t
-           (princ (format "  Status: %s" (capitalize status)))))
-    (princ "\n")
-    ;; Archive
-    (unless (and pkg-dir (not archive)) ; Installed pkgs don't have archive.
-      (princ (format " Archive: %s" (or archive "n/a")))
-      (princ "\n"))
-    ;; Version
-    (when version
-      (princ (format " Version: %s\n" (package-version-join version))))
-    (when desc
-      (princ (format " Summary: %s\n" (package-desc-summary desc))))
-    (when homepage
-      (princ (format "Homepage: %s\n" homepage)))
-    (princ "\n")))
+  (let ((p (or (epl-find-installed-package (intern pkg-name))
+               (car (epl-find-available-packages (intern pkg-name))))))
+    (unless p
+      (princ (format "Error: No available package with the name \"%s\"\n" pkg-name))
+      (kill-emacs 1))
+    (let* ((installed-p (epl-package-installed-p p))
+           (version (epl-package-version-string p))
+           ;; Package description used in `package.el'
+           (-p (epl-package-description p))
+           (summary (and (fboundp 'package-desc-summary)
+                         (package-desc-summary -p)))
+           (archive (and (not installed-p)
+                         (fboundp 'package-desc-archive)
+                         (package-desc-archive -p)))
+           (extras (and (fboundp 'package-desc-extras)
+                        (package-desc-extras -p)))
+           (homepage (cdr (assoc :url extras)))
+           (reqs (epl-package-requirements p))
+           (reqs-string (mapconcat
+                         (lambda (r)
+                           (concat (symbol-name (epl-requirement-name r))
+                                   "-"
+                                   (epl-requirement-version-string r)))
+                         reqs ", ")))
+      ;; Status
+      (princ (format "  Status: %s\n" (if installed-p "Installed" "Not installed")))
+      ;; Archive
+      (unless installed-p
+        (princ (format " Archive: %s\n" (or archive "n/a"))))
+      ;; Version
+      (princ (format " Version: %s\n" version))
+      ;; Summary
+      (when summary
+        (princ (format " Summary: %s\n" summary)))
+      ;; Homepage
+      (when homepage
+        (princ (format "Homepage: %s\n" homepage)))
+      ;; Dependencies
+      (when reqs
+        (princ (format "Requires: %s\n" reqs-string))))))
 
 (defun epm-search (query)
-  (let ((packages (mapcar 'car package-archive-contents)))
+  (let ((packages (mapcar #'epl-package-name (epl-available-packages))))
     (setq packages (mapcar 'symbol-name packages))
     (dolist (match (cl-remove-duplicates
                     (delq nil
@@ -107,42 +102,22 @@
                     :test #'equal))
       (princ (format "%s\n" match)))))
 
-(defun epm--package-outdated-p (package)
-  (let* ((pkg (cadr (assq package package-alist)))
-         (old-version (and pkg (package-desc-version pkg)))
-         (avaiable (cadr (assq package package-archive-contents)))
-         (new-version (and avaiable (package-desc-version avaiable))))
-    (and pkg avaiable
-         (version-list-< old-version new-version)
-         (list old-version new-version))))
-
-(defun epm--outdated-packages ()
-  (let (outdated)
-    (dolist (package (mapcar #'car package-alist))
-      (when (epm--package-outdated-p package)
-        (push package outdated)))
-    (nreverse outdated)))
-
 (defun epm-outdated ()
-  (dolist (package (epm--outdated-packages))
-    (cl-destructuring-bind (old-version new-version) (epm--package-outdated-p package)
-      (princ (format "%s (%s < %s)\n" package
-                     (package-version-join old-version)
-                     (package-version-join new-version))))))
+  (dolist (name
+           (mapcar #'epl-package-name (epl-outdated-packages)))
+    (princ (format "%s\n" name))))
 
 (defun epm-upgrade (pkg-name)
-  (let ((upgrades (epm--outdated-packages))
-        desc)
-    (when (not (equal "" pkg-name))
-      (if (epm--package-outdated-p (intern pkg-name))
-          (setq upgrades (list (intern pkg-name)))
-        (princ (format "Error: Unable to upgrade package: %s\n" pkg-name))
-        (kill-emacs 1)))
-    (dolist (package upgrades)
-      (setq desc (cadr (assq package package-alist)))
-      (package-install (cadr (assq package package-archive-contents)))
-      (package-delete desc))
-    (princ (format "\nUpgrade %d package(s)\n" (length upgrades)))))
+  (if (equal "" pkg-name)
+      (epl-upgrade)
+    (let ((pkg (intern pkg-name)))
+      (unless (epl-package-installed-p pkg)
+        (princ (format "Error: Not installed package: %s\n" pkg))
+        (kill-emacs 1))
+      (if (epl-package-outdated-p pkg)
+          (epl-upgrade (list (epl-find-installed-package pkg)))
+        (princ (format "%s is up to date." pkg))
+        (kill-emacs 0)))))
 
 (provide 'epm)
 ;;; epm.el ends here
