@@ -17,14 +17,14 @@ Usage:
     $EPM [option]
 
 Commands:
-    list                List installed packages
-    install             Install a package
-    delete              Delete a package
     refresh             Download package archives
-    info                Display information about a package
-    search              Search packages
+    install PACKAGE     Install a package
+    list                List installed packages
+    delete  PACKAGE     Delete a package
+    info    PACKAGE     Display information about a package
+    search  PATTERN     Search packages
     outdated            List outdated packages
-    upgrade             Upgrade outdated packages
+    upgrade [PACKAGE]   Upgrade a outdated package (or all outdated packages)
 
 Options:
     -h, --help          Display this message
@@ -36,8 +36,6 @@ Environment Variable:
 Startup File:
     ~/.epm.el           The file contains code to bootstrap package.el
                         Refer to $EPM_DIRECTORY/.epm.el.sample as an example
-
-WARNING: Tested with only Emacs 24.5 and 25.2 (trunk)
 EOF
 }
 
