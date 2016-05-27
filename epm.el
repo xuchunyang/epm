@@ -123,22 +123,20 @@
 (defconst epm-load-file load-file-name)
 
 (defun epm-version ()
-  (let ((epm-version
-         (cond ((epl-package-installed-p 'epm)
-                (epl-package-version-string
-                 (epl-find-installed-package 'epm)))
-               ((let ((gitdir (expand-file-name
-                               ".git" (file-name-directory
-                                       epm-load-file))))
-                  (file-exists-p gitdir))
-                (with-temp-buffer
-                  (if (zerop (call-process-shell-command "git describe --tags" nil t))
-                      (progn
-                        (goto-char 1)
-                        (buffer-substring 1 (line-end-position)))
-                    "0.1")))
-               (t "0.1"))))
-    (princ (format "epm %s, Emacs %s\n" epm-version emacs-version))))
+  (let (epm-version)
+    (if (epl-package-installed-p 'epm)
+        (setq epm-version
+              (epl-package-version-string
+               (epl-find-installed-package 'epm)))
+      (let* ((gitdir (expand-file-name
+                     ".git" (file-name-directory epm-load-file)))
+            (default-directory gitdir))
+        (when (file-exists-p gitdir)
+          (with-temp-buffer
+            (when (zerop (call-process-shell-command "git describe --tags" nil t))
+              (goto-char 1)
+              (setq epm-version (buffer-substring 1 (line-end-position))))))))
+    (princ (format "epm %s, Emacs %s\n" (or epm-version "0.1") emacs-version))))
 
 (provide 'epm)
 ;;; epm.el ends here
