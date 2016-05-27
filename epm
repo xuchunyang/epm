@@ -71,14 +71,17 @@ upgrade () {
     $EMACS $EMACS_FLAGS --eval "(epm-upgrade \"$1\")"
 }
 
+version () {
+    $EMACS $EMACS_FLAGS -f epm-version
+}
+
 COMMAND=$1
 case $COMMAND in
     "" | "-h" | "--help")
         usage
         ;;
     "-v" | "--version")
-        printf "epm %s\n" $EPM_VERSION
-        $EMACS --version | head -n 1
+        version
         ;;
     "list" | "install" | "delete" | "refresh" | "info" | "search" | "outdated" | "upgrade")
         shift

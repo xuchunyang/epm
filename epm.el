@@ -4,6 +4,7 @@
 
 ;; Author: Chunyang Xu <xuchunyang.me@gmail.com>
 ;; Package-Requires: ((emacs "24.3") (epl "0.8"))
+;; Version: 0.1
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -118,6 +119,26 @@
           (epl-upgrade (list (epl-find-installed-package pkg)))
         (princ (format "%s is up to date." pkg))
         (kill-emacs 0)))))
+
+(defconst epm-load-file load-file-name)
+
+(defun epm-version ()
+  (let ((epm-version
+         (cond ((epl-package-installed-p 'epm)
+                (epl-package-version-string
+                 (epl-find-installed-package 'epm)))
+               ((let ((gitdir (expand-file-name
+                               ".git" (file-name-directory
+                                       epm-load-file))))
+                  (file-exists-p gitdir))
+                (with-temp-buffer
+                  (if (zerop (call-process-shell-command "git describe --tags" nil t))
+                      (progn
+                        (goto-char 1)
+                        (buffer-substring 1 (line-end-position)))
+                    "0.1")))
+               (t "0.1"))))
+    (princ (format "epm %s, Emacs %s\n" epm-version emacs-version))))
 
 (provide 'epm)
 ;;; epm.el ends here
