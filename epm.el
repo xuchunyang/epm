@@ -19,6 +19,11 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+
+;; epm is a command-line wrapper for `package.el' that let you manage
+;; Emacs packages from command-line
+
 ;;; Code:
 
 (require 'cl-lib)
