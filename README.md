@@ -1,8 +1,8 @@
-# epm
+# Emacs Package Manager
 
 ## Introduction
 
-epm is a command-line wrapper for `package.el` that serves as an Emacs Package Manager on command-line.
+EPM is a command-line wrapper for `package.el` that serves as an Emacs Package Manager on command-line.
 
 ## Requirements
 
@@ -11,8 +11,29 @@ epm is a command-line wrapper for `package.el` that serves as an Emacs Package M
 
 ## Installation
 
-- Obtain epm
-- Add `/path/to/epm` to your `PATH` or alias `/path/to/epm/epm` as `epm`
+### Melpa
+
+Once EPM is available from Melpa, you can install EPM and its dependency easily using:
+
+    M-x package-install RET epm RET
+
+Since the directory package is installed to is not stable, you can setup an alias
+
+    $ alias epm='~/.emacs.d/elpa/epm-*/epm'
+
+### Manually
+
+Install epm's dependency epl using:
+
+    M-x package-install RET epl RET
+
+Obtain EPM via git
+
+    $ git clone https://github.com/xuchunyang/epm.git
+
+Add epm's directory to your PATH.
+
+    $ export PATH=/path/to/epm/:$PATH
 
 ## Usage
 
@@ -49,7 +70,7 @@ Startup File:
                         Refer to /Users/xcy/Projects/epm/.epm.el as an example
 ```
 
-Before you can actually use epm to do some real package management,
+Before you can actually use EPM to do some real package management,
 you may need to set `EMACS` and add `~/.epm.el`.
 
 ## Sample Startup File
