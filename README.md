@@ -11,9 +11,9 @@ EPM is a command-line wrapper for `package.el` that serves as an Emacs Package M
 
 ## Installation
 
-### Melpa
+### MELPA
 
-Once EPM is available from Melpa, you can install EPM and its dependency easily using:
+Once EPM is available from MELPA, you can install EPM and its dependency easily
 
     M-x package-install RET epm RET
 
@@ -23,7 +23,7 @@ Since the directory package is installed to is not stable, you can setup an alia
 
 ### Manually
 
-Install epm's dependency epl using:
+Install EPM's dependency epl
 
     M-x package-install RET epl RET
 
@@ -31,7 +31,7 @@ Obtain EPM via git
 
     $ git clone https://github.com/xuchunyang/epm.git
 
-Add epm's directory to your PATH.
+Add EPM's directory to your PATH
 
     $ export PATH=/path/to/epm/:$PATH
 
