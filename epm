@@ -8,6 +8,8 @@ EPM_DIRECTORY=$(dirname $0)
 EMACS=${EMACS:-emacs}
 EMACS_FLAGS="-Q --batch -l $EPM_DIRECTORY/epm.el"
 
+export EPM_RUNNING_P="yes"
+
 usage () {
     cat <<EOF
 $EPM - Emacs Package Manager
