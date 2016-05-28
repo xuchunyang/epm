@@ -37,7 +37,7 @@ Environment Variable:
 
 Startup File:
     ~/.epm.el           The file contains code to bootstrap package.el
-                        Refer to $EPM_DIRECTORY/.epm.el.sample as an example
+                        Refer to $EPM_DIRECTORY/.epm.el as an example
 EOF
 }
 
