@@ -3,6 +3,7 @@
 ;; Copyright (C) 2016  Chunyang Xu
 
 ;; Author: Chunyang Xu <xuchunyang.me@gmail.com>
+;; URL: https://github.com/xuchunyang/epm
 ;; Package-Requires: ((emacs "24.3") (epl "0.8"))
 ;; Version: 0.1
 
