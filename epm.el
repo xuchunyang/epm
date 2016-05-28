@@ -145,7 +145,7 @@
             (when (zerop (call-process-shell-command "git describe --tags" nil t))
               (goto-char 1)
               (setq epm-version (buffer-substring 1 (line-end-position))))))))
-    (princ (format "epm %s, Emacs %s\n" (or epm-version "0.1") emacs-version))))
+    (princ (format "EPM %s\nEmacs %s\n" (or epm-version "0.1") emacs-version))))
 
 (provide 'epm)
 ;;; epm.el ends here

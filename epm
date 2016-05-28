@@ -1,7 +1,5 @@
 #!/bin/sh
 
-EPM_VERSION="0.1"
-
 EPM=$(basename $0)
 EPM_DIRECTORY=$(dirname $0)
 
