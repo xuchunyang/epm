@@ -25,6 +25,17 @@
 ;; epm is a command-line wrapper for `package.el' that let you manage
 ;; Emacs packages from command-line
 ;;
+;; After installing epm from Melpa or Melpa-stable, alias
+;; `/path/to/epm/epm` as `epm`
+;;
+;;   $ alias epm='~/.emacs.d/elpa/epm-*/epm'
+;;
+;; Assuming the value of your `package-user-dir' is "~/.emacs.d/elpa"
+;;
+;; To use, invoke `epm' from shell
+;;
+;;   $ epm --help
+;;
 ;; See the accompanying README.md for details.
 
 ;;; Code:
@@ -47,6 +58,7 @@
 
 (defun epm-ls-find-column-lengths (files window-width)
   ;; Borrowed from `eshell-ls-find-column-lengths'
+  ;; FIXME: Tweak this function to drop some Eshell assumptions
   "Find the best fitting column lengths for FILES.
 It will be returned as a vector, whose length is the number of columns
 to use, and each member of which is the width of that column
@@ -159,6 +171,7 @@ to use, and each member of which is the width of that column
     (epl-package-install package)))
 
 (defun epm-delete (pkg-name)
+  ;; TODO Fix byte compiling warnnings
   (let ((package (epl-find-installed-package (intern pkg-name))))
     (epl-package-delete package)))
 
@@ -224,6 +237,7 @@ to use, and each member of which is the width of that column
                  (epl-outdated-packages))))
     (epm-ls pkg-names)))
 
+;; TODO Upgrade outdated dependencies as well
 (defun epm-upgrade (pkg-name)
   (if (equal "" pkg-name)
       (epl-upgrade)
