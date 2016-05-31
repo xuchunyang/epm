@@ -45,11 +45,114 @@
 
 (require 'epl)
 
+(defun epm-ls-find-column-lengths (files window-width)
+  ;; Borrowed from `eshell-ls-find-column-lengths'
+  "Find the best fitting column lengths for FILES.
+It will be returned as a vector, whose length is the number of columns
+to use, and each member of which is the width of that column
+\(including spacing)."
+  (let* ((numcols 1)
+         (width 0)
+         (widths
+          (mapcar
+           (function
+            (lambda (file)
+              (+ 2 (length (car file)))))
+           files))
+         (max-width (+ window-width 2))
+         col-widths
+         colw)
+
+    ;; refine it based on the following rows
+    (while numcols
+      (let* ((rows (ceiling (/ (length widths)
+                               (float numcols))))
+             (w widths)
+             (len (* rows numcols))
+             (index 0)
+             (i 0))
+        (setq width 0)
+        (unless (or (= rows 0)
+                    (<= (/ (length widths) (float rows))
+                        (float (1- numcols))))
+          (setq colw (make-vector numcols 0))
+          (while (> len 0)
+            (if (= i numcols)
+                (setq i 0 index (1+ index)))
+            (aset colw i
+                  (max (aref colw i)
+                       (or (nth (+ (* i rows) index) w) 0)))
+            (setq len (1- len) i (1+ i)))
+          (setq i 0)
+          (while (< i numcols)
+            (setq width (+ width (aref colw i))
+                  i (1+ i))))
+        (if (>= width max-width)
+            (setq numcols nil)
+          (if colw
+              (setq col-widths colw))
+          (if (>= numcols (length widths))
+              (setq numcols nil)
+            (setq numcols (1+ numcols))))))
+
+    (if (not col-widths)
+        (cons (vector max-width) files)
+      (setq numcols (length col-widths))
+      (let* ((rows (ceiling (/ (length widths)
+                               (float numcols))))
+             (len (* rows numcols))
+             (newfiles (make-list len nil))
+             (index 0)
+             (i 0)
+             (j 0))
+        (while (< j len)
+          (if (= i numcols)
+              (setq i 0 index (1+ index)))
+          (setcar (nthcdr j newfiles)
+                  (nth (+ (* i rows) index) files))
+          (setq j (1+ j) i (1+ i)))
+        (cons col-widths newfiles)))))
+
+(defun epm-ls-multi-column (strings)
+  "Print STRINGS with multi-column like ls -C"
+  (let* ((new-strings (mapcar #'list strings))
+         (terminal-width
+          (string-to-number (getenv "EPM_COLUMNS")))
+         (col-vals (epm-ls-find-column-lengths
+                    new-strings terminal-width))
+         (col-widths (car col-vals))
+         (entries (cdr col-vals)))
+    (setq entries (mapcar #'car entries))
+    (let ((len (length col-widths))
+          (first t)
+          (index 0))
+      (dolist (elt entries)
+        (when (and (not first) (zerop (% index len)))
+          (princ "\n"))
+        (when first
+          (setq first nil))
+        (when elt
+          (princ (format (format "%%-%ds" (aref col-widths (% index len))) elt)))
+        (setq index (+ 1 index)))
+      (princ "\n"))))
+
+(defun epm-ls-per-line (strings)
+  "Print STRINGS one entry per line like ls -1"
+  (dolist (s strings)
+    (princ (format "%s\n" s))))
+
+(defun epm-ls (strings)
+  (if (equal "yes" (getenv "EPM_OUTPUT_TERMINAL_P"))
+      (epm-ls-multi-column strings)
+    (epm-ls-per-line strings)))
+
 (defun epm-list ()
-  (dolist (name
-           (nreverse
-            (mapcar #'epl-package-name (epl-installed-packages))))
-    (princ (format "%s\n" name))))
+  (let ((pkg-names
+         (nreverse
+          (mapcar (lambda (p)
+                    (symbol-name (epl-package-name p)))
+                  (epl-installed-packages)))))
+    (epm-ls pkg-names)))
 
 (defun epm-install (pkg-name)
   (let ((package (car (epl-find-available-packages (intern pkg-name)))))
@@ -102,20 +205,24 @@
         (princ (format "Requires: %s\n" reqs-string))))))
 
 (defun epm-search (query)
-  (let ((packages (mapcar #'epl-package-name (epl-available-packages))))
-    (setq packages (mapcar 'symbol-name packages))
-    (dolist (match (cl-remove-duplicates
-                    (delq nil
-                          (mapcar (lambda (name)
-                                    (if (string-match query name) name nil))
-                                  packages))
-                    :test #'equal))
-      (princ (format "%s\n" match)))))
+  (let ((pkg-names
+         (mapcar (lambda (p)
+                   (symbol-name (epl-package-name p)))
+                 (epl-available-packages))))
+    (epm-ls
+     (cl-remove-duplicates
+      (delq nil
+            (mapcar (lambda (name)
+                      (if (string-match query name) name nil))
+                    pkg-names))
+      :test #'equal))))
 
 (defun epm-outdated ()
-  (dolist (name
-           (mapcar #'epl-package-name (epl-outdated-packages)))
-    (princ (format "%s\n" name))))
+  (let ((pkg-names
+         (mapcar (lambda (p)
+                   (symbol-name (epl-package-name p)))
+                 (epl-outdated-packages))))
+    (epm-ls pkg-names)))
 
 (defun epm-upgrade (pkg-name)
   (if (equal "" pkg-name)

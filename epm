@@ -83,7 +83,18 @@ case $COMMAND in
     "-v" | "--version")
         version
         ;;
-    "list" | "install" | "delete" | "refresh" | "info" | "search" | "outdated" | "upgrade")
+    "list" | "search" | "outdated")
+
+        # Prefer multi-column output like ls(1)
+        if [ -t 1 ]; then
+            export EPM_OUTPUT_TERMINAL_P="yes"
+            export EPM_COLUMNS=$( tput cols )
+        fi
+
+        shift
+        ${COMMAND} $@
+        ;;
+    "install" | "delete" | "refresh" | "info" | "upgrade")
         shift
         ${COMMAND} $@
         ;;
