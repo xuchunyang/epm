@@ -1,4 +1,7 @@
-# Emacs Package Manager
+# Emacs Package Manager 
+
+[![MELPA](https://melpa.org/packages/epm-badge.svg)](https://melpa.org/#/epm)
+[![MELPA Stable](https://stable.melpa.org/packages/epm-badge.svg)](https://stable.melpa.org/#/epm)
 
 ## Introduction
 
@@ -11,9 +14,9 @@ EPM is a command-line wrapper for `package.el` that serves as an Emacs Package M
 
 ## Installation
 
-### MELPA
+### ELPA
 
-Once EPM is available from MELPA, you can install EPM and its dependency easily
+EPM is available from Melpa and Melpa-stable, you can install EPM and its dependency easily
 
     M-x package-install RET epm RET
 
