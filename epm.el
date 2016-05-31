@@ -138,8 +138,8 @@
               (epl-package-version-string
                (epl-find-installed-package 'epm)))
       (let* ((gitdir (expand-file-name
-                     ".git" (file-name-directory epm-load-file)))
-            (default-directory gitdir))
+                      ".git" (file-name-directory epm-load-file)))
+             (default-directory gitdir))
         (when (file-exists-p gitdir)
           (with-temp-buffer
             (when (zerop (call-process-shell-command "git describe --tags" nil t))

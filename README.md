@@ -1,4 +1,4 @@
-# Emacs Package Manager 
+# Emacs Package Manager
 
 [![MELPA](https://melpa.org/packages/epm-badge.svg)](https://melpa.org/#/epm)
 [![MELPA Stable](https://stable.melpa.org/packages/epm-badge.svg)](https://stable.melpa.org/#/epm)
