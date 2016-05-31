@@ -173,7 +173,10 @@ to use, and each member of which is the width of that column
 (defun epm-delete (pkg-name)
   ;; TODO Fix byte compiling warnnings
   (let ((package (epl-find-installed-package (intern pkg-name))))
-    (epl-package-delete package)))
+    (if package
+        (epl-package-delete package)
+      (princ (format "Error: No such package: \"%s\"\n" pkg-name))
+      (kill-emacs 1))))
 
 (defun epm-info (pkg-name)
   (let ((p (or (epl-find-installed-package (intern pkg-name))
