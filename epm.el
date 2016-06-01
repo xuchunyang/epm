@@ -250,7 +250,7 @@ to use, and each member of which is the width of that column
         (kill-emacs 1))
       (if (epl-package-outdated-p pkg)
           (epl-upgrade (list (epl-find-installed-package pkg)))
-        (princ (format "%s is up to date." pkg))
+        (princ (format "%s is up to date\n" pkg))
         (kill-emacs 0)))))
 
 (defconst epm-load-file load-file-name)
