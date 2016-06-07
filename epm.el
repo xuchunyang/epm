@@ -271,5 +271,17 @@ to use, and each member of which is the width of that column
               (setq epm-version (buffer-substring 1 (line-end-position))))))))
     (princ (format "EPM %s\nEmacs %s\n" (or epm-version "0.1") emacs-version))))
 
+(defun epm-refresh (&optional show-new)
+  (let (old-archives)
+    (package-read-all-archive-contents)
+    (setq old-archives package-archive-contents)
+    (package-refresh-contents)
+    (if show-new
+	(let (new-packages)
+	  (dolist (elt package-archive-contents)
+	    (unless (assq (car elt) old-archives)
+	      (push (car elt) new-packages)))
+	  (epm-ls new-packages)))))
+
 (provide 'epm)
 ;;; epm.el ends here

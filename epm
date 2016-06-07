@@ -52,7 +52,7 @@ delete () {
 }
 
 refresh () {
-    $EMACS $EMACS_FLAGS -f package-refresh-contents
+    $EMACS $EMACS_FLAGS --eval "(epm-refresh t)"
 }
 
 info () {
