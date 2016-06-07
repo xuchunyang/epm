@@ -281,7 +281,13 @@ to use, and each member of which is the width of that column
 	  (dolist (elt package-archive-contents)
 	    (unless (assq (car elt) old-archives)
 	      (push (car elt) new-packages)))
-	  (epm-ls new-packages)))))
+          (when new-packages
+            ;; Because `epm-ls' needs a list of strings
+            (princ (format "Added %d new package%s:\n"
+                           (length new-packages)
+                           (if (= (length new-packages) 1) "" "s")))
+            (setq new-packages (mapcar #'symbol-name new-packages))
+            (epm-ls new-packages))))))
 
 (provide 'epm)
 ;;; epm.el ends here

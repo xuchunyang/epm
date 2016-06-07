@@ -83,7 +83,7 @@ case $COMMAND in
     "-v" | "--version")
         version
         ;;
-    "list" | "search" | "outdated")
+    "list" | "search" | "outdated" | "refresh")
 
         # Prefer multi-column output like ls(1)
         if [ -t 1 ]; then
@@ -94,7 +94,7 @@ case $COMMAND in
         shift
         ${COMMAND} $@
         ;;
-    "install" | "delete" | "refresh" | "info" | "upgrade")
+    "install" | "delete" | "info" | "upgrade")
         shift
         ${COMMAND} $@
         ;;
