@@ -170,6 +170,16 @@ to use, and each member of which is the width of that column
   (let ((package (car (epl-find-available-packages (intern pkg-name)))))
     (epl-package-install package)))
 
+(defun epm-reinstall (pkg-name)
+  (let ((package (epl-find-installed-package (intern pkg-name))))
+    (if package
+        (if (fboundp 'package-reinstall)
+            (package-reinstall (epl-package-name package))
+          (epl-package-delete package)
+          (epl-package-install package))
+      (princ (format "Error: Unable to reinstall \"%s\", since it is not installed\n" pkg-name))
+      (kill-emacs 1))))
+
 (defun epm-delete (pkg-name)
   ;; TODO Fix byte compiling warnnings
   (let ((package (epl-find-installed-package (intern pkg-name))))

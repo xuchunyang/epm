@@ -53,13 +53,14 @@ Usage:
 
 Commands:
     refresh             Download package archives
-    install PACKAGE     Install a package
+    install   PACKAGE   Install a package
+    reinstall PACKAGE   Reinstall a package
     list                List installed packages
-    delete  PACKAGE     Delete a package
-    info    PACKAGE     Display information about a package
-    search  PATTERN     Search packages
+    delete    PACKAGE   Delete a package
+    info      PACKAGE   Display information about a package
+    search    PATTERN   Search packages
     outdated            List outdated packages
-    upgrade [PACKAGE]   Upgrade a outdated package (or all outdated packages)
+    upgrade   [PACKAGE] Upgrade a outdated package (or all outdated packages)
 
 Options:
     -h, --help          Display this message
