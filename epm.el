@@ -54,6 +54,15 @@
       (require 'package)
       (package-initialize))))
 
+;; NOTE: This variable was added into Emacs at April 22 2016.
+(when (boundp inhibit-message)
+  (require 'cus-edit)
+  (defun epm--inhibit-message (orig-func &rest r)
+    "Let-bind `inhibit-message' around ORIG-FUNC."
+    (let ((inhibit-message t))
+      (apply orig-func r)))
+  (advice-add 'customize-save-variable :around #'epm--inhibit-message))
+
 (require 'epl)
 
 (defun epm-ls-find-column-lengths (files window-width)
