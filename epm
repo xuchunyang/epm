@@ -99,9 +99,13 @@ case $COMMAND in
         shift
         ${COMMAND} $@
         ;;
-    "install" | "reinstall" |"delete" | "info" | "upgrade")
+    "install" | "reinstall" | "info" | "upgrade")
         shift
         ${COMMAND} $@
+        ;;
+    "delete" | "uninstall" | "remove" )
+        shift
+        delete $@
         ;;
     *)
         echo "Error: Unknown command: ${COMMAND}"
