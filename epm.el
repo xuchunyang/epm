@@ -43,14 +43,9 @@
 (require 'cl-lib)
 
 (when (equal "yes" (getenv "EPM_RUNNING_P"))
-  (let ((epm-init-file "~/.epm.el"))
+  (let ((epm-init-file (expand-file-name "~/.epm.el")))
     (if (file-exists-p epm-init-file)
-        ;; Using this instead of simply `load-file' is because I don't know how to
-        ;; silence load message, something like:
-        ;; Loading /Users/xcy/.epm.el (source)...
-        (with-temp-buffer
-          (insert-file-contents epm-init-file)
-          (eval-buffer))
+        (load epm-init-file nil 'no-message)
       (require 'package)
       (package-initialize))))
 
