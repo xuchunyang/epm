@@ -55,7 +55,7 @@
       (package-initialize))))
 
 ;; NOTE: This variable was added into Emacs at April 22 2016.
-(when (boundp inhibit-message)
+(when (boundp 'inhibit-message)
   (require 'cus-edit)
   (defun epm--inhibit-message (orig-func &rest r)
     "Let-bind `inhibit-message' around ORIG-FUNC."
