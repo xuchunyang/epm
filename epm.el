@@ -43,7 +43,7 @@
 (require 'cl-lib)
 
 (when (equal "yes" (getenv "EPM_RUNNING_P"))
-  (let ((epm-init-file (expand-file-name "~/.epm.el")))
+  (let ((epm-init-file (expand-file-name (or (getenv "EPM_INIT_FILE") "~/.epm.el"))))
     (if (file-exists-p epm-init-file)
         (load epm-init-file nil 'no-message)
       (require 'package)
